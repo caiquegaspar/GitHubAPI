@@ -1,6 +1,8 @@
 <template>
   <PageMeta />
-  <router-view />
+  <div class="app-content">
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -16,4 +18,22 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&display=swap");
+
+:root {
+  font-size: 14px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Baloo 2", cursive;
+}
+
+.app-content {
+  background-color: #f8f9fe;
+  width: 100vw;
+  height: 100vh;
+}
 </style>

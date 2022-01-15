@@ -5,6 +5,7 @@ export default Vuex.createStore({
   state() {
     return {
       initialData: {},
+      userInfo: {},
     };
   },
 
@@ -16,17 +17,21 @@ export default Vuex.createStore({
       commit('setPageData', data);
     },
     
-    getUser({
+    getUsers({
       commit
     }, payload) {
-      const data = fetchData.getUser(payload);
-      commit('setPageData', data);
+      const data = fetchData.getUsers(payload);
+      commit('getUsers', data);
     },
   },
 
   mutations: {
     setPageData(state, data) {
       state.initialData = data
+    },
+    
+    getUsers(state, data) {
+      state.userInfo = data
     },
   },
 
