@@ -22,6 +22,7 @@ export default {
 
 :root {
   font-size: 14px;
+  background-color: #f8f9fe;
 }
 
 * {
@@ -29,11 +30,5 @@ export default {
   margin: 0;
   box-sizing: border-box;
   font-family: "Baloo 2", cursive;
-}
-
-.app-content {
-  background-color: #f8f9fe;
-  width: 100vw;
-  height: 100vh;
 }
 </style>

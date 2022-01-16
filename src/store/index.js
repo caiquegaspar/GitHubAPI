@@ -5,7 +5,7 @@ export default Vuex.createStore({
   state() {
     return {
       initialData: {},
-      userInfo: {},
+      usersList: {},
     };
   },
 
@@ -16,11 +16,11 @@ export default Vuex.createStore({
       const data = fetchData.initialData();
       commit('setPageData', data);
     },
-    
-    getUsers({
+
+    async getUsers({
       commit
     }, payload) {
-      const data = fetchData.getUsers(payload);
+      const data = await fetchData.getUsers(payload);
       commit('getUsers', data);
     },
   },
@@ -29,9 +29,9 @@ export default Vuex.createStore({
     setPageData(state, data) {
       state.initialData = data
     },
-    
+
     getUsers(state, data) {
-      state.userInfo = data
+      state.usersList = data
     },
   },
 

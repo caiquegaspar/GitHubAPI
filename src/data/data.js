@@ -21,9 +21,13 @@ function initialData() {
 function getUsers(payload) {
     const host = "https://api.github.com/search/users?";
 
-    return axios.get(`${host}q=${payload.user}&per_page=10&page=1${clientQueryString}`)
+    return axios.get(`${host}q=${payload.user}&per_page=20&page=1${clientQueryString}`)
         .then((result) => {
-            console.log(result)
+            console.log(result);
+            return result.data
+        })
+        .catch((err) => {
+            console.log(err);
         })
 }
 

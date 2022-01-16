@@ -29,7 +29,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.$store.state.initialData);
     this.$nextTick(() => {
       Array.from(document.querySelector("head").children).forEach((node) => {
         if (node.getAttribute("ssr")) {

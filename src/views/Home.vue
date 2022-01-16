@@ -3,27 +3,39 @@
   <div class="search-container">
     <div class="search-input">
       <div class="input-icon">
-        <img src="https://www.svgrepo.com/show/14071/search.svg" alt="" />
+        <img
+          src="https://www.svgrepo.com/show/14071/search.svg"
+          alt="search icon"
+        />
       </div>
-      <input @keyup="getUsers" v-model="inputstring" placeholder="Pesquise um usuário" class="search-box" />
+      <input
+        @keyup="getUsers"
+        v-model="inputstring"
+        placeholder="Pesquise um usuário"
+        class="search-box"
+      />
     </div>
   </div>
+  <Cards :inputstring="inputstring" :key="mountcards" />
 </template>
 
 <script>
-import Header from "../components/Header.vue";
+import Header from "@/components/Header.vue";
+import Cards from "@/components/Cards.vue";
 
 export default {
   name: "Home",
 
   data() {
     return {
-      inputstring: '',
-    }
+      inputstring: "",
+      mountcards: 1,
+    };
   },
 
   components: {
     Header,
+    Cards,
   },
 
   created() {
@@ -36,8 +48,10 @@ export default {
     },
 
     async getUsers(e) {
-      console.log(this.inputstring);
-      await this.$store.dispatch("getUsers", { user: e.target.value });
+      if (e.target.value)
+        await this.$store.dispatch("getUsers", { user: e.target.value });
+
+      ++this.mountcards;
     },
   },
 };

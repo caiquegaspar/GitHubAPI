@@ -21,12 +21,12 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .header-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0;
+  padding: 15px 0;
   opacity: 0;
   transition: 1s;
   transform: translate3d(-50px, 0, 0);
