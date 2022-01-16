@@ -1,27 +1,39 @@
 <template>
   <Header />
-  <div class="search-container">
-    <div class="search-input">
-      <div class="input-icon">
-        <img
-          src="https://www.svgrepo.com/show/14071/search.svg"
-          alt="search icon"
-        />
+  <div class="components">
+    <div class="cards-component">
+      <div class="search-container">
+        <div class="search-input">
+          <div class="input-icon">
+            <img
+              src="https://www.svgrepo.com/show/14071/search.svg"
+              alt="search icon"
+            />
+          </div>
+          <input
+            @keyup="getUsers"
+            v-model="inputstring"
+            placeholder="Pesquise um usuário"
+            class="search-box"
+          />
+        </div>
       </div>
-      <input
-        @keyup="getUsers"
-        v-model="inputstring"
-        placeholder="Pesquise um usuário"
-        class="search-box"
+      <Cards
+        @goToProfile="goToProfile"
+        :inputstring="inputstring"
+        :key="mountcards"
       />
     </div>
+    <div class="profile-component">
+      <Profile @backToCards="backToCards" />
+    </div>
   </div>
-  <Cards :inputstring="inputstring" :key="mountcards" />
 </template>
 
 <script>
 import Header from "@/components/Header.vue";
 import Cards from "@/components/Cards.vue";
+import Profile from "@/components/Profile.vue";
 
 export default {
   name: "Home",
@@ -36,15 +48,40 @@ export default {
   components: {
     Header,
     Cards,
+    Profile,
   },
 
   created() {
     this.setData();
+
+    this.goToProfile("caiquegaspar");
   },
 
   methods: {
     setData() {
       this.$store.dispatch("addPageInitialData");
+    },
+
+    async goToProfile(name) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      let cards = document.querySelector(".cards-component");
+      cards.classList.add("leave-animation");
+
+      await this.$store.dispatch("getUserData", { user: name });
+
+      let profile = document.querySelector(".profile-component");
+      profile.classList.add("enter-animation");
+    },
+
+    backToCards() {
+      let profile = document.querySelector(".profile-component");
+      profile.classList.remove("enter-animation");
+
+      setTimeout(() => {
+        let cards = document.querySelector(".cards-component");
+        cards.classList.remove("leave-animation");
+      }, 200);
     },
 
     async getUsers(e) {
@@ -58,6 +95,12 @@ export default {
 </script>
 
 <style scoped>
+.components {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
 .search-container {
   display: flex;
   justify-content: center;
@@ -87,5 +130,35 @@ export default {
 .search-box:focus {
   box-shadow: none;
   outline: 0;
+}
+
+.cards-component {
+  position: absolute;
+  width: 80%;
+  opacity: 1;
+  z-index: 1;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.2s;
+}
+
+.profile-component {
+  position: absolute;
+  width: 80%;
+  opacity: 0;
+  z-index: 0;
+  transform: translate3d(50px, 0, 0);
+  transition: all 0.2s;
+}
+
+.leave-animation {
+  z-index: 0;
+  opacity: 0;
+  transform: translate3d(-50px, 0, 0);
+}
+
+.enter-animation {
+  z-index: 1;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 </style>

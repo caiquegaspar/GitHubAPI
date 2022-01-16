@@ -12,7 +12,7 @@
               <h4>
                 {{ user.login }}
               </h4>
-              <a
+              <a @click="$emit('goToProfile', user.login)"
                 >Exibir detalhes
                 <img
                   :src="'https://www.svgrepo.com/show/10764/eye.svg'"
@@ -76,6 +76,7 @@ export default {
   justify-content: center;
   align-items: center;
   margin: 40px 0;
+  transition: all 0.2s;
 }
 
 .results-count {
@@ -101,7 +102,7 @@ export default {
   width: 180px;
   height: 100px;
   border: 0;
-  box-shadow: 0px 0px 7px 0px #8c8c8c;
+  box-shadow: 0px 0px 4px 0px #8c8c8c;
   border-radius: 0.3rem;
   position: relative;
   transition: all 0.2s;
@@ -144,6 +145,7 @@ export default {
 
 .user-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0px 0px 7px 0px #8c8c8c;
 }
 
 .user-card:hover .user-avatar {
@@ -155,6 +157,10 @@ export default {
 .user-card:hover .user-info a {
   opacity: 1;
   display: flex;
+}
+
+.user-info a:hover {
+  color: #347d39;
 }
 
 .user-card:hover .user-info {

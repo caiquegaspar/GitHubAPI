@@ -6,6 +6,7 @@ export default Vuex.createStore({
     return {
       initialData: {},
       usersList: {},
+      userInfo: {},
     };
   },
 
@@ -23,6 +24,13 @@ export default Vuex.createStore({
       const data = await fetchData.getUsers(payload);
       commit('getUsers', data);
     },
+    
+    async getUserData({
+      commit
+    }, payload) {
+      const data = await fetchData.getUserData(payload);
+      commit('getUserData', data);
+    },
   },
 
   mutations: {
@@ -32,6 +40,10 @@ export default Vuex.createStore({
 
     getUsers(state, data) {
       state.usersList = data
+    },
+    
+    getUserData(state, data) {
+      state.userInfo = data
     },
   },
 
