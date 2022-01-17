@@ -35,10 +35,50 @@ function getUserData(payload) {
     const host = "https://api.github.com/users";
 
     return axios.get(`${host}/${payload.user}?${clientQueryString}`)
-        .then((result) => {
-            console.log(result);
-            return result.data
-        })
+        .then((result) => axios.get(`${host}/${payload.user}/repos?${clientQueryString}`)
+            .then((res) => {
+                let addOcurrences = res.data
+                    .reduce((acc, obj) => {
+                        obj.language = obj.language === null ? "Outros" : obj.language
+                        acc.push(obj.language)
+                        return acc
+                    }, [])
+                    .reduce((acc, obj) => {
+                        return acc[obj] ? ++acc[obj] : acc[obj] = 1, acc
+                    }, {});
+
+                let languages = Object.entries(addOcurrences)
+                    .reduce((acc, obj) => {
+                        const [key, value] = obj;
+
+                        acc.push({
+                            language: key,
+                            ocurrences: value
+                        })
+
+                        return acc
+                    }, [])
+                    .sort((a, b) => {
+                        return a.ocurrences < b.ocurrences ?
+                            1 :
+                            b.ocurrences < a.ocurrences ?
+                            -1 :
+                            0;
+                    })
+                    .slice(0, 2);
+
+                let ocurrencesSum = Object.values(addOcurrences)
+                    .reduce((acc, obj) => {
+                        acc = acc + obj
+                        return acc
+                    }, 0)
+
+                result.data['languages'] = languages
+                console.log(ocurrencesSum, result, languages, res)
+
+                return result.data
+            })
+        )
         .catch((err) => {
             console.log(err);
         })

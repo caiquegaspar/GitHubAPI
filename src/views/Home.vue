@@ -53,8 +53,6 @@ export default {
 
   created() {
     this.setData();
-
-    this.goToProfile("caiquegaspar");
   },
 
   methods: {

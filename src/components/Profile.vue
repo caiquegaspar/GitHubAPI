@@ -28,6 +28,12 @@
         <span class="point"></span>
         <span>{{ user.following }} seguindo</span>
       </div>
+      <div class="user-stats">
+
+      </div>
+      <div class="user-repos">
+        
+      </div>
     </div>
   </div>
 </template>
