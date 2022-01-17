@@ -9,6 +9,13 @@
         />
         <h3>Voltar</h3>
       </a>
+      <a class="new-tab-btn" @click="openProfile">
+        <img
+          :src="'https://www.svgrepo.com/show/317846/actions-new-window.svg'"
+          class="new-tab-icon"
+          alt="open in new tab icon"
+        />
+      </a>
       <img :src="user.avatar_url" class="user-avatar" alt="search icon" />
       <div class="user-info">
         <h2>
@@ -29,22 +36,62 @@
         <span>{{ user.following }} seguindo</span>
       </div>
       <div class="user-stats">
-
-      </div>
-      <div class="user-repos">
-        
+        <component :is="currentTab" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Stats from "@/components/Stats.vue";
+import Loader from "@/components/Loader.vue";
+
 export default {
   name: "Profile",
+
+  props: { loadstats: Boolean },
+
+  data() {
+    return {
+      userStats: false,
+      currentTab: "Loader",
+    };
+  },
+
+  components: {
+    Stats,
+    Loader,
+  },
 
   computed: {
     user() {
       return this.$store.state.userInfo;
+    },
+  },
+
+  methods: {
+    async getStats(name, total) {
+      await this.$store.dispatch("getUserStats", {
+        user: name,
+        totalrepos: total,
+      });
+
+      this.currentTab = "Stats";
+    },
+
+    openProfile() {
+      window.open(this.user.html_url, "_blank");
+    },
+  },
+
+  watch: {
+    loadstats() {
+      if (this.loadstats)
+        this.getStats(this.user.login, this.user.public_repos);
+      else
+        setTimeout(() => {
+          this.currentTab = "Loader";
+        }, 250);
     },
   },
 };
@@ -87,6 +134,17 @@ export default {
 .back-icon {
   width: 19px;
   margin: 0 6px;
+}
+
+.new-tab-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  margin: 8px;
 }
 
 .profile-card h3 {
@@ -132,5 +190,9 @@ export default {
   border: 2px solid #000;
   border-radius: 50%;
   margin: 0 8px;
+}
+
+.user-stats {
+  margin: 40px 0;
 }
 </style>

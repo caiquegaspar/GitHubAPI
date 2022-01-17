@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+import colors from './colors';
+
 const clientId = "f9592fa38a7cae6b1bd1";
 const clientSecret = "f93b203fb02b657ff2781efd1d5ab318afb66c73";
 const clientQueryString = `client_id=${clientId}&client_secret=${clientSecret}`
@@ -23,7 +25,6 @@ function getUsers(payload) {
 
     return axios.get(`${host}q=${payload.user}&per_page=20&page=1?${clientQueryString}`)
         .then((result) => {
-            console.log(result);
             return result.data
         })
         .catch((err) => {
@@ -31,61 +32,86 @@ function getUsers(payload) {
         })
 }
 
-function getUserData(payload) {
+function getUserInitialData(payload) {
     const host = "https://api.github.com/users";
 
     return axios.get(`${host}/${payload.user}?${clientQueryString}`)
-        .then((result) => axios.get(`${host}/${payload.user}/repos?${clientQueryString}`)
-            .then((res) => {
-                let addOcurrences = res.data
-                    .reduce((acc, obj) => {
-                        obj.language = obj.language === null ? "Outros" : obj.language
-                        acc.push(obj.language)
-                        return acc
-                    }, [])
-                    .reduce((acc, obj) => {
-                        return acc[obj] ? ++acc[obj] : acc[obj] = 1, acc
-                    }, {});
+        .then((result) => result.data)
+        .catch((err) => console.log(err))
+}
 
-                let languages = Object.entries(addOcurrences)
-                    .reduce((acc, obj) => {
-                        const [key, value] = obj;
+function getUserStats(payload) {
+    const host = "https://api.github.com/users";
+    const nPages = Math.ceil(payload.totalrepos / 100)
+    const arrPages = [...Array(nPages).keys()]
+    let reposInfo = {
+        totaRepos: [],
+        topLanguages: [],
+    }
 
-                        acc.push({
-                            language: key,
-                            ocurrences: value
-                        })
-
-                        return acc
-                    }, [])
-                    .sort((a, b) => {
-                        return a.ocurrences < b.ocurrences ?
-                            1 :
-                            b.ocurrences < a.ocurrences ?
-                            -1 :
-                            0;
-                    })
-                    .slice(0, 2);
-
-                let ocurrencesSum = Object.values(addOcurrences)
-                    .reduce((acc, obj) => {
-                        acc = acc + obj
-                        return acc
-                    }, 0)
-
-                result.data['languages'] = languages
-                console.log(ocurrencesSum, result, languages, res)
-
-                return result.data
+    return Promise.all(arrPages.map(page =>
+            axios.get(`${host}/${payload.user}/repos?${clientQueryString}&per_page=100&page=${page + 1}`)
+            .then((res) => reposInfo.totaRepos.push(...res.data))
+            .catch((err) => {
+                console.log(err);
             })
-        )
-        .catch((err) => {
-            console.log(err);
+        ))
+        .then(() => {
+            let addOcurrences = reposInfo.totaRepos
+                .reduce((acc, obj) => {
+                    obj.language = obj.language === null ? "Outros" : obj.language
+                    acc.push(obj.language)
+                    return acc
+                }, [])
+                .reduce((acc, obj) => {
+                    return acc[obj] ? ++acc[obj] : acc[obj] = 1, acc
+                }, {});
+
+            let languages = Object.entries(addOcurrences)
+                .reduce((acc, obj) => {
+                    const [key, value] = obj;
+
+                    acc.push({
+                        language: key,
+                        ocurrences: value
+                    })
+
+                    return acc
+                }, [])
+                .sort((a, b) => {
+                    return a.ocurrences < b.ocurrences ?
+                        1 :
+                        b.ocurrences < a.ocurrences ?
+                        -1 :
+                        0;
+                })
+
+            reposInfo.topLanguages = [...languages]
+
+            const getTime = (obj) => new Date(obj).getTime()
+            reposInfo.totaRepos = reposInfo.totaRepos.sort((a, b) => {
+                    return getTime(a.pushed_at) < getTime(b.pushed_at) ?
+                        1 :
+                        getTime(b.pushed_at) < getTime(a.pushed_at) ?
+                        -1 :
+                        0;
+                })
+                .slice(0, 6)
+                .map(rep => {
+                    const found = colors[rep.language]
+                    if (found) rep['language_color'] = found.color
+                    else rep['language_color'] = '#505050'
+
+                    return rep
+                })
+
+            return reposInfo
         })
 }
 
 export default {
     initialData,
     getUsers,
-    getUserData,
+    getUserInitialData,
+    getUserStats
 };

@@ -25,7 +25,7 @@
       />
     </div>
     <div class="profile-component">
-      <Profile @backToCards="backToCards" />
+      <Profile @backToCards="backToCards" :loadstats="loadstats" />
     </div>
   </div>
 </template>
@@ -42,6 +42,7 @@ export default {
     return {
       inputstring: "",
       mountcards: 1,
+      loadstats: false,
     };
   },
 
@@ -66,7 +67,8 @@ export default {
       let cards = document.querySelector(".cards-component");
       cards.classList.add("leave-animation");
 
-      await this.$store.dispatch("getUserData", { user: name });
+      await this.$store.dispatch("getUserInitialData", { user: name });
+      this.loadstats = true;
 
       let profile = document.querySelector(".profile-component");
       profile.classList.add("enter-animation");
@@ -75,6 +77,8 @@ export default {
     backToCards() {
       let profile = document.querySelector(".profile-component");
       profile.classList.remove("enter-animation");
+
+      this.loadstats = false;
 
       setTimeout(() => {
         let cards = document.querySelector(".cards-component");
@@ -135,6 +139,7 @@ export default {
   width: 80%;
   opacity: 1;
   z-index: 1;
+  visibility: visible;
   transform: translate3d(0, 0, 0);
   transition: all 0.2s;
 }
@@ -144,6 +149,7 @@ export default {
   width: 80%;
   opacity: 0;
   z-index: 0;
+  visibility: hidden;
   transform: translate3d(50px, 0, 0);
   transition: all 0.2s;
 }
@@ -151,12 +157,14 @@ export default {
 .leave-animation {
   z-index: 0;
   opacity: 0;
+  visibility: hidden;
   transform: translate3d(-50px, 0, 0);
 }
 
 .enter-animation {
   z-index: 1;
   opacity: 1;
+  visibility: visible;
   transform: translate3d(0, 0, 0);
 }
 </style>
