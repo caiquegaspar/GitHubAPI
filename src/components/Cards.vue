@@ -12,8 +12,7 @@
               class="left-icon"
               alt="back icon"
               @click="
-                --selected,
-                  changePage(inputstring, selected, translateX + 30)
+                --selected, changePage(inputstring, selected, translateX + 30)
               "
             />
             <div class="card-pages">
@@ -40,8 +39,7 @@
               class="right-icon"
               alt="next icon"
               @click="
-                ++selected,
-                  changePage(inputstring, selected, translateX - 30)
+                ++selected, changePage(inputstring, selected, translateX - 30)
               "
             />
           </div>
@@ -239,6 +237,7 @@ export default {
   margin: 10px 0;
   text-decoration: none;
   transition: all 0.2s;
+  font-size: 15px;
 }
 
 .show-icon {
