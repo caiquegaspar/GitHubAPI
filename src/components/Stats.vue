@@ -1,7 +1,6 @@
 <template>
   <div class="stats-content">
     <Charts />
-    <h3>Últimos repositórios</h3>
     <Repos />
   </div>
 </template>
@@ -32,5 +31,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #505050;
 }
 </style>

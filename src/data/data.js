@@ -86,7 +86,13 @@ function getUserStats(payload) {
                         0;
                 })
 
-            reposInfo.topLanguages = [...languages]
+            reposInfo.topLanguages = [...languages].map(rep => {
+                const found = colors[rep.language]
+                if (found) rep['language_color'] = found.color
+                else rep['language_color'] = '#505050'
+
+                return rep
+            })
 
             const getTime = (obj) => new Date(obj).getTime()
             reposInfo.totaRepos = reposInfo.totaRepos.sort((a, b) => {

@@ -1,4 +1,5 @@
 <template>
+  <h3 class="repos-title">Últimos repositórios</h3>
   <div class="repos-container">
     <div v-for="repo in repos" :key="repo.id">
       <div class="repo-card">
@@ -55,14 +56,14 @@ export default {
       return this.$store.state.userStats.totaRepos;
     },
   },
-
-  created() {
-    console.log(this.repos);
-  },
 };
 </script>
 
 <style scoped>
+.repos-title {
+  margin: 20px 0 10px 0;
+}
+
 .repos-container {
   display: grid;
   place-items: center;

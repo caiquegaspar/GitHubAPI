@@ -5,7 +5,7 @@
         <h3 class="results-count">
           Perfis encontrados: {{ users.total_count }}
         </h3>
-        <div class="cards-grid">
+        <div class="cards-grid responsive">
           <div v-for="user in users.items" class="user-card" :key="user.id">
             <img :src="user.avatar_url" class="user-avatar" alt="search icon" />
             <div class="user-info">
