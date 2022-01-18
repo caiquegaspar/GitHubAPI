@@ -60,6 +60,24 @@
             :stroke-dashoffset="circle.separator_position"
           ></circle>
         </g>
+
+        <g
+          transform="translate(0, -9) scale(1,-1)"
+          style="transform-origin: 50% 50%"
+        >
+          <circle
+            :class="'svg_circle'"
+            :data-percentage="`0 ${donutData.total}`"
+            fill="none"
+            stroke="#f8f9fe"
+            stroke-width="7.6"
+            r="16"
+            cx="16"
+            cy="16"
+            :stroke-dasharray="`${donutData.total} ${donutData.total}`"
+            stroke-dashoffset="-0"
+          ></circle>
+        </g>
       </g>
     </svg>
 
@@ -76,10 +94,12 @@
               fill="#9d9d9d"
             />
             <rect
+              :class="'svg_bar'"
+              :data-percentage="circle.percentage"
               x="0"
               :y="circle.rect_position"
               rx="2"
-              :width="circle.percentage"
+              :width="'0'"
               height="8"
               :fill="circle.language_color"
             />
@@ -127,7 +147,7 @@ export default {
 
   created() {
     const arr = this.stats.topLanguages;
-    
+
     let othersIndex = arr.findIndex((item) => item.language === "Outros");
     let cutEl = arr.splice(othersIndex, 1);
     arr.push(...cutEl);
@@ -165,6 +185,35 @@ export default {
       return item;
     });
   },
+
+  mounted() {
+    this.$nextTick(() => this.animation());
+  },
+
+  methods: {
+    animation() {
+      const animate = (element, styleItem) => {
+        return new Promise((resolve) =>
+          setTimeout(
+            () =>
+              resolve(
+                (element.style[styleItem] =
+                  element.getAttribute("data-percentage"))
+              ),
+            500
+          )
+        );
+      };
+
+      document.querySelectorAll(`.svg_circle`).forEach((item) => {
+        animate(item, "strokeDasharray");
+      });
+
+      document.querySelectorAll(`.svg_bar`).forEach((item) => {
+        animate(item, "width");
+      });
+    },
+  },
 };
 </script>
 
@@ -178,5 +227,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.svg_circle,
+.svg_bar {
+  transition: all 3s ease;
 }
 </style>

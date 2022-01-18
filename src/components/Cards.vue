@@ -2,10 +2,51 @@
   <div class="cards-container">
     <div v-if="inputstring">
       <div v-if="users.items?.length">
-        <h3 class="results-count">
-          Perfis encontrados: {{ users.total_count }}
-        </h3>
-        <div class="cards-grid responsive">
+        <div class="cards-header">
+          <h3 class="results-count">
+            Perfis encontrados: {{ users.total_count }}
+          </h3>
+          <div class="cards-pagination">
+            <img
+              :src="'https://www.svgrepo.com/show/218169/left-arrow-back.svg'"
+              class="left-icon"
+              alt="back icon"
+              @click="
+                --selected,
+                  changePage(inputstring, selected, translateX + 30)
+              "
+            />
+            <div class="card-pages">
+              <div
+                class="card-pages-content"
+                :style="`transform: translate(${translateX}px, 0);`"
+              >
+                <div
+                  v-for="page in users.arr_pages"
+                  :key="page.page"
+                  class="page-btn"
+                  :class="{ active: selected === page.page }"
+                  @click="
+                    changePage(inputstring, page.page, page.increment),
+                      (selected = page.page)
+                  "
+                >
+                  {{ page.page }}
+                </div>
+              </div>
+            </div>
+            <img
+              :src="'https://www.svgrepo.com/show/218171/right-arrow-next.svg'"
+              class="right-icon"
+              alt="next icon"
+              @click="
+                ++selected,
+                  changePage(inputstring, selected, translateX - 30)
+              "
+            />
+          </div>
+        </div>
+        <div class="cards-grid first_break second_break" :key="mountcards">
           <div v-for="user in users.items" class="user-card" :key="user.id">
             <img :src="user.avatar_url" class="user-avatar" alt="search icon" />
             <div class="user-info">
@@ -40,7 +81,7 @@
           src="https://www.svgrepo.com/show/14071/search.svg"
           alt="search icon"
         />
-        <h1>Faça agora uma pesquisa!</h1>
+        <h2>Faça agora uma pesquisa!</h2>
       </div>
     </div>
   </div>
@@ -52,9 +93,26 @@ export default {
 
   props: { inputstring: String },
 
+  data() {
+    return {
+      selected: 1,
+      translateX: 37,
+      mountcards: 0,
+    };
+  },
+
   computed: {
     users() {
       return this.$store.state.usersList;
+    },
+  },
+
+  methods: {
+    changePage(user, page, increment) {
+      this.translateX = increment;
+
+      this.$emit("changePage", user, page);
+      ++this.mountcards;
     },
   },
 
@@ -79,8 +137,53 @@ export default {
   transition: all 0.2s;
 }
 
+.cards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
+
 .results-count {
   margin: 15px 30px;
+}
+
+.cards-pagination {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 130px;
+  height: 0;
+  margin: 15px 30px;
+}
+
+.cards-pagination img {
+  cursor: pointer;
+  width: 25px;
+}
+
+.card-pages {
+  overflow: hidden;
+  width: 100%;
+}
+
+.card-pages-content {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  transform-origin: 50% 50%;
+  transition: all 0.2s;
+}
+
+.page-btn {
+  cursor: pointer;
+  width: 30px;
+}
+
+.active {
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .cards-grid {

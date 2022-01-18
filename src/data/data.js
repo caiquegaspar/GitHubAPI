@@ -2,10 +2,6 @@ const axios = require('axios');
 
 import colors from './colors';
 
-const clientId = "f9592fa38a7cae6b1bd1";
-const clientSecret = "f93b203fb02b657ff2781efd1d5ab318afb66c73";
-const clientQueryString = `client_id=${clientId}&client_secret=${clientSecret}`
-
 function initialData() {
     return {
         title: "GitHub User Scraper",
@@ -23,8 +19,20 @@ function initialData() {
 function getUsers(payload) {
     const host = "https://api.github.com/search/users?";
 
-    return axios.get(`${host}q=${payload.user}&per_page=20&page=1?${clientQueryString}`)
+    return axios.get(`${host}q=${payload.user}&per_page=20&page=${payload.page}`)
         .then((result) => {
+            result.data['total_pages'] = Math.ceil(result.data.total_count / 20)
+
+            let space = 67
+
+            result.data['arr_pages'] = [...Array(result.data.total_pages).keys()]
+                .map(page => {
+                    return page = {
+                        page: page + 1,
+                        increment: space -= 30
+                    }
+                })
+
             return result.data
         })
         .catch((err) => {
@@ -35,7 +43,7 @@ function getUsers(payload) {
 function getUserInitialData(payload) {
     const host = "https://api.github.com/users";
 
-    return axios.get(`${host}/${payload.user}?${clientQueryString}`)
+    return axios.get(`${host}/${payload.user}`)
         .then((result) => result.data)
         .catch((err) => console.log(err))
 }
@@ -50,7 +58,7 @@ function getUserStats(payload) {
     }
 
     return Promise.all(arrPages.map(page =>
-            axios.get(`${host}/${payload.user}/repos?${clientQueryString}&per_page=100&page=${page + 1}`)
+            axios.get(`${host}/${payload.user}/repos?&per_page=100&page=${page + 1}`)
             .then((res) => reposInfo.totaRepos.push(...res.data))
             .catch((err) => {
                 console.log(err);

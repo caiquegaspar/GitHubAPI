@@ -37,16 +37,23 @@ export default {
 
 /* X-Small devices */
 @media (max-width: 575.98px) {
-}
-
-/* Small devices (landscape phones, less than 768px) */
-@media (max-width: 767.98px) {
-  .cards-grid.responsive {
-    grid-template-columns: repeat(2, 1fr) !important;
+  .cards-grid.first_break.second_break {
+    grid-template-columns: repeat(1, 1fr) !important;
   }
 
   .charts-content {
     flex-direction: column;
+  }
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+  .cards-grid.first_break {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .repos-container {
+    grid-template-columns: repeat(1, 1fr) !important;
   }
 }
 
@@ -56,8 +63,8 @@ export default {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 
-  .repos-container {
-    grid-template-columns: repeat(1, 1fr) !important;
+  .profile-card[data-v-bf1681ae] {
+    width: 100% !important;
   }
 }
 

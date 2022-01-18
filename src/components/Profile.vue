@@ -7,7 +7,7 @@
           class="back-icon"
           alt="back icon"
         />
-        <h3>Voltar</h3>
+        <h4>Voltar</h4>
       </a>
       <a class="new-tab-btn" @click="openProfile">
         <img
@@ -124,15 +124,16 @@ export default {
   align-items: center;
   position: absolute;
   cursor: pointer;
-  top: -40px;
+  top: -38px;
   left: 0;
   border: 0;
   box-shadow: 0px 0px 7px 0px #8c8c8c;
   border-radius: 0.8rem;
+  padding: 2px 6px 2px 0;
 }
 
 .back-icon {
-  width: 19px;
+  width: 16px;
   margin: 0 6px;
 }
 

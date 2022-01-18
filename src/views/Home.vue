@@ -20,6 +20,7 @@
       </div>
       <Cards
         @goToProfile="goToProfile"
+        @changePage="changePage"
         :inputstring="inputstring"
         :key="mountcards"
       />
@@ -88,9 +89,19 @@ export default {
 
     async getUsers(e) {
       if (e.target.value)
-        await this.$store.dispatch("getUsers", { user: e.target.value });
+        await this.$store.dispatch("getUsers", {
+          user: e.target.value,
+          page: 1,
+        });
 
       ++this.mountcards;
+    },
+
+    async changePage(user, page) {
+      await this.$store.dispatch("getUsers", {
+        user: user,
+        page: page,
+      });
     },
   },
 };
